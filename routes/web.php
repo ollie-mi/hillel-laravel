@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use \Illuminate\Routing\Router;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,10 +15,32 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Auth::routes();
+
+Route::get('/', 'IndexController')->name('index');
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/user', 'UserController@index')->name('user');
+
+Route::group([
+    'as' => 'blog.',
+    'namespace' => 'Blog',
+    'prefix' => '/blog',
+], function (Router $route) {
+    $route->get('/', 'Post@index')->name('index');
+
+    $route->get('/create', 'Post@create')->name('create');
+    $route->post('/create', 'Post@store')->name('store');
+
+    $route->get('/view/{id}', 'Post@show')->name('show');
+
+    $route->get('/update/{id}', 'Post@edit')->name('edit');
+    $route->put('/update/{id}', 'Post@update')->name('update');
+
+    $route->delete('/destroy/{id}', 'Post@destroy')->name('destroy');
 });
 
-Route::get('/home', 'HomeController@index');
+Auth::routes();
 
-Route::get('/user', 'UserController@index');
+Route::get('/home', 'HomeController@index')->name('home');
