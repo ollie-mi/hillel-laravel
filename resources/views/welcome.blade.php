@@ -69,6 +69,7 @@
         <div class="top-right links">
             <a href="{{ route('index') }}">Index</a>
             <a href="{{ route('blog.index') }}">Blog index</a>
+            <a href="{{ route('user.index') }}">User index</a>
             @auth
                 <a href="{{ url('/home') }}">Home</a>
             @else
