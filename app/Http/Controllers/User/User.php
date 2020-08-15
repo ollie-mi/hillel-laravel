@@ -7,27 +7,36 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use function Psy\sh;
+use Illuminate\Routing\Redirector;
+use Illuminate\View\View;
+use App\Models\User as UserModel;
 
 class User extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function index()
+    public function index(): View
     {
-        return view('user.index');
+        $users = UserModel::with(['profile'])
+            ->where('status', '=', 'ON')
+            ->get()
+            ->all();
+
+        return view('user.index', compact('users'));
     }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function create()
+    public function create(): View
     {
         return view('user.create');
     }
@@ -35,8 +44,8 @@ class User extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param UserCreateRequest $request
+     * @return Application|RedirectResponse|Redirector
      */
     public function store(UserCreateRequest $request)
     {
@@ -48,9 +57,9 @@ class User extends Controller
     /**
      * Show the form for select user by id
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function select_form()
+    public function select_form(): View
     {
         return view('user.select');
     }
@@ -59,7 +68,7 @@ class User extends Controller
      * Get User Id from form
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Application|RedirectResponse|Redirector
      */
     public function show_user(Request $request)
     {
@@ -70,35 +79,35 @@ class User extends Controller
         $userId = $request->get('userId');
 
         return redirect(
-          route('user.show', ['id' => $userId])
+          route('user.show', $userId)
         );
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param UserModel $user
+     * @return View
      */
-    public function show($id)
+    public function show(UserModel $user): View
     {
-        return view('user.show', ['userId' => $id]);
+        return view('user.show', compact('user'));
     }
 
     /**
      * Show the form for selecting user for update
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function select_user()
+    public function select_user(): View
     {
         return view('user.select_user');
     }
 
     /**
      * Show the form for update user by id
-     *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Application|RedirectResponse|Redirector
      */
     public function update_form(Request $request)
     {
@@ -116,10 +125,10 @@ class User extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @return View
      */
-    public function edit($id)
+    public function edit(int $id): View
     {
         return view('user.edit', ['userId' => $id]);
     }
@@ -129,9 +138,9 @@ class User extends Controller
      *
      * @param UserUpdateRequest $request
      * @param int $id
-     * @return void
+     * @return Application|RedirectResponse|Redirector
      */
-    public function update(UserUpdateRequest $request, $id)
+    public function update(UserUpdateRequest $request, int $id)
     {
         return redirect(
             route('user.index')
@@ -141,18 +150,17 @@ class User extends Controller
     /**
      * Show the form for selecting user for delete
      *
-     * @return \Illuminate\Http\Response
+     * @return View
      */
-    public function delete_form()
+    public function delete_form(): View
     {
         return view('user.delete');
     }
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Application|RedirectResponse|Redirector
      */
     public function destroy(Request $request)
     {

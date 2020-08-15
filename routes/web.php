@@ -58,7 +58,7 @@ Route::group([
     // Select user
     $route->get('/show', 'User@select_form')->name('select');
     $route->post('/show', 'User@show_user')->name('show_user');
-    $route->get('/show/{id}', 'User@show')->name('show');
+    $route->get('/show/{user}', 'User@show')->name('show');
     // Update user
     $route->get('/update', 'User@select_user')->name('select_user');
     $route->post('/update', 'User@update_form')->name('update_form');
