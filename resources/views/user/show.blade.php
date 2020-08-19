@@ -50,6 +50,10 @@ use App\Models\User;
                                 <th scope="row">Created at</th>
                                 <td>{{$user->created_at}}</td>
                             </tr>
+                            <tr>
+                                <th scope="row">Order ID</th>
+                                <td>{{$user->orderListStr()}}</td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

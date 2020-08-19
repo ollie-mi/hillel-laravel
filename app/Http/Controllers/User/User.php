@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
@@ -19,14 +20,29 @@ class User extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return View
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        $users = UserModel::with(['profile'])
-            ->where('status', '=', 'ON')
-            ->get()
-            ->all();
+        $search = $request->get('search');
+
+        $query = UserModel::with(['profile', 'orders'])
+            ->where('status', '=', 'ON');
+
+        if (!empty($search)) {
+            $query
+                ->join('user_profiles', 'users.id', '=', 'user_profiles.user_id')
+                ->where('status', '=', 'ON')
+                ->where(static function ($query) use ($search) {
+                    $query->where('login', 'like', "%$search%")
+                        ->orWhere('email', 'like', "%$search%")
+                        ->orWhere('first_name', 'like', "%$search%")
+                        ->orWhere('last_name', 'like', "%$search%");
+                });
+        }
+
+        $users = $query->paginate(20);
 
         return view('user.index', compact('users'));
     }

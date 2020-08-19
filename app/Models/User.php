@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -21,6 +22,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property Carbon $deleted_at;
  *
  * @property UserProfile $profile;
+ * @method static inRandomOrder();
+ *
+ * @property Order $orders;
  */
 class User extends Model
 {
@@ -35,5 +39,28 @@ class User extends Model
     public function profile(): HasOne
     {
         return $this->hasOne(UserProfile::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function orderListStr()
+    {
+        $str = '';
+
+        $orderObj = $this->orders;
+
+        if ($orderObj->isNotEmpty()) {
+            foreach ($orderObj as $order) {
+                $str .= $order->id . ', ';
+            }
+            $str = rtrim(trim($str), ',');
+        } else {
+            $str = 'No orders yet';
+        }
+
+        return $str;
     }
 }

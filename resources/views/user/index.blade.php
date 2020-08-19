@@ -1,9 +1,10 @@
 <?php
 /**
- * @var $users User[];
+ * @var $users User[]|LengthAwarePaginator;
  */
 
 use App\Models\User;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 ?>
 
@@ -31,7 +32,14 @@ use App\Models\User;
             </div>
         </div>
         <div class="row">
-{{--            @if($users->isNotEmpty())--}}
+            <form action="{{route('user.index')}}" method="GET" class="form-inline">
+                <div class="form-group mx-sm-3 mb-2 position-relative">
+                    <input type="text" class="form-control" name="search">
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Search</button>
+            </form>
+        </div>
+        <div class="row">
             @if(!empty($users))
                 <table class="table table-striped">
                     <thead>
@@ -44,6 +52,7 @@ use App\Models\User;
                         <th scope="col">Birthday</th>
                         <th scope="col">Status</th>
                         <th scope="col">Created at</th>
+                        <th scope="col">Orders ID</th>
                         <th scope="col">Actions</th>
                     </tr>
                     </thead>
@@ -58,12 +67,18 @@ use App\Models\User;
                             <td>{{$user->profile->birthdayFormat()}}</td>
                             <td>{{$user->status}}</td>
                             <td>{{$user->created_at}}</td>
+                            <td>
+                                @foreach($user->orders as $order)
+                                    <div>{{ $order->id }}</div>
+                                @endforeach
+                            </td>
                             <td><a class="badge badge-primary" href="{{ route('user.show', $user->id) }}">Show
                                     User</a></td>
                         </tr>
                     @endforeach
                     </tbody>
                 </table>
+                {{$users->links()}}
             @endif
         </div>
     </div>

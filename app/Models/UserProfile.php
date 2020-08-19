@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserProfile extends Model
 {
+    public $timestamps = false;
+
     public function userFullName(): string
     {
         return $this->first_name . ' ' . $this->last_name;
