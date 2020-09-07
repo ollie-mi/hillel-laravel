@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class UserProfile
@@ -17,6 +18,13 @@ use Illuminate\Database\Eloquent\Model;
  */
 class UserProfile extends Model
 {
+    protected $fillable = [
+        'first_name',
+        'last_name',
+        'phone',
+        'birthday'
+    ];
+
     public $timestamps = false;
 
     public function userFullName(): string
@@ -28,6 +36,11 @@ class UserProfile extends Model
     {
         $dt = Carbon::parse($this->birthday);
         return $dt->format('d/m/Y');
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
 }

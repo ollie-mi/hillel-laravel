@@ -72,8 +72,10 @@ use Illuminate\Pagination\LengthAwarePaginator;
                                     <div>{{ $order->id }}</div>
                                 @endforeach
                             </td>
-                            <td><a class="badge badge-primary" href="{{ route('user.show', $user->id) }}">Show
-                                    User</a></td>
+                            <td>
+                                <a class="badge badge-primary" href="{{ route('user.show', $user->id) }}">Show User</a>
+                                <a class="badge badge-secondary" href="{{ route('user.edit', $user->id) }}">Edit User</a>
+                            </td>
                         </tr>
                     @endforeach
                     </tbody>

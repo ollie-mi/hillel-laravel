@@ -1,8 +1,10 @@
 <?php
 /**
  * @var $errors ViewErrorBag
+ * @var $user User;
  */
 
+use App\Models\User;
 use Illuminate\Support\ViewErrorBag;
 
 ?>
@@ -13,8 +15,8 @@ use Illuminate\Support\ViewErrorBag;
         <div class="insert-form">
             <div class="row">
                 <div class="mx-auto my-5">
-                    <h1 class="text-center mb-5">Update User {{ $userId }}</h1>
-                    <form action="{{ route('user.update', ['id' => $userId])}}" method="post"
+                    <h1 class="text-center mb-5">Update User {{ $user->id }}</h1>
+                    <form action="{{ route('user.update', $user)}}" method="post"
                           class="justify-content-center">
                         @method('PUT')
                         @csrf
@@ -24,7 +26,7 @@ use Illuminate\Support\ViewErrorBag;
                                    class="form-control @if($errors->has('first_name')) is-invalid @endif"
                                    name="first_name"
                                    id="inputFirstName"
-                                   value="{{ old('first_name') }}">
+                                   value="{{ old('first_name', $user->profile->first_name) }}">
 
                             @if($errors->has('first_name'))
                                 <div class="invalid-feedback">
@@ -38,7 +40,7 @@ use Illuminate\Support\ViewErrorBag;
                                    class="form-control @if($errors->has('last_name')) is-invalid @endif"
                                    name="last_name"
                                    id="inputLastName"
-                                   value="{{ old('last_name') }}">
+                                   value="{{ old('last_name', $user->profile->last_name) }}">
 
                             @if($errors->has('last_name'))
                                 <div class="invalid-feedback">
@@ -52,7 +54,7 @@ use Illuminate\Support\ViewErrorBag;
                                    class="form-control @if($errors->has('birthday')) is-invalid @endif"
                                    name="birthday"
                                    id="inputBirthDay"
-                                   value="{{ old('birthday') }}">
+                                   value="{{ old('birthday', $user->profile->birthday) }}">
 
                             @if($errors->has('birthday'))
                                 <div class="invalid-feedback">
@@ -60,7 +62,7 @@ use Illuminate\Support\ViewErrorBag;
                                 </div>
                             @endif
                         </div>
-                        <button type="submit" class="btn btn-primary btn-lg btn-block">Add User</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn-block">Update User</button>
                     </form>
                 </div>
             </div>

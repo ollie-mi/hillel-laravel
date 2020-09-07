@@ -23,11 +23,20 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  *
  * @property UserProfile $profile;
  * @method static inRandomOrder();
+ * @method static create(array $user_data)
+ * @method where(string $string, $value)
  *
  * @property Order $orders;
  */
 class User extends Model
 {
+
+    protected $fillable = [
+        'login',
+        'password',
+        'email'
+    ];
+
     public function resolveRouteBinding($value, $field = null)
     {
         return $this

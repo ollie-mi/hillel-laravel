@@ -7,6 +7,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
+use App\Models\UserProfile;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
 use App\Models\User as UserModel;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class User extends Controller
 {
@@ -65,6 +68,15 @@ class User extends Controller
      */
     public function store(UserCreateRequest $request)
     {
+        DB::transaction(static function () use ($request) {
+            $user_data = $request->only('login', 'password', 'email');
+            $user_data['password'] = Hash::make($user_data['password']);
+            $profile_data = $request->only('phone', 'first_name', 'last_name', 'birthday');
+
+            $user = UserModel::create($user_data);
+            $user->profile()->create($profile_data);
+        }, 3);
+
         return redirect(
             route('user.index')
         );
@@ -133,31 +145,36 @@ class User extends Controller
 
         $userId = $request->get('userId');
 
+        $model = new UserModel();
+        $user = $model::find($userId);
+
         return redirect(
-            route('user.edit', ['id' => $userId])
+            route('user.edit', compact('user'))
         );
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
+     * @param UserModel $user
      * @return View
      */
-    public function edit(int $id): View
+    public function edit(UserModel $user): View
     {
-        return view('user.edit', ['userId' => $id]);
+        return view('user.edit', compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param UserUpdateRequest $request
-     * @param int $id
+     * @param UserModel $user
      * @return Application|RedirectResponse|Redirector
      */
-    public function update(UserUpdateRequest $request, int $id)
+    public function update(UserUpdateRequest $request, UserModel $user)
     {
+        $data = $request->only('first_name', 'last_name', 'birthday');
+        $user->profile()->update($data);
         return redirect(
             route('user.index')
         );
@@ -185,6 +202,9 @@ class User extends Controller
         ]);
 
         $userId = $request->get('userId');
+        $user = (new UserModel())->find($userId);
+
+        $user->delete();
 
         return redirect(
             route('user.index')

@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $user_id;
  * @property float $order_price;
  * @property Carbon $created_at;
+ * @method isNotEmpty()
  */
 class Order extends Model
 {

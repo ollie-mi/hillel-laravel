@@ -32,7 +32,7 @@ use Illuminate\Support\ViewErrorBag;
                                 </div>
                             @endif
                         </div>
-                        <button type="submit" class="btn btn-primary mb-2">Show User</button>
+                        <button type="submit" class="btn btn-primary mb-2">Delete User</button>
                     </form>
                 </div>
             </div>

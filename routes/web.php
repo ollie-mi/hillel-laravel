@@ -62,8 +62,8 @@ Route::group([
     // Update user
     $route->get('/update', 'User@select_user')->name('select_user');
     $route->post('/update', 'User@update_form')->name('update_form');
-    $route->get('/update/{id}', 'User@edit')->name('edit');
-    $route->put('/update/{id}', 'User@update')->name('update');
+    $route->get('/update/{user}', 'User@edit')->name('edit');
+    $route->put('/update/{user}', 'User@update')->name('update');
     // Delete user
     $route->get('/destroy', 'User@delete_form')->name('delete');
     $route->delete('/destroy', 'User@destroy')->name('destroy');

@@ -5,6 +5,9 @@ namespace App\Http\Requests;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * @property mixed birthday
+ */
 class UserCreateRequest extends FormRequest
 {
     /**
@@ -55,10 +58,34 @@ class UserCreateRequest extends FormRequest
                 'string'
             ],
             'birthday' => [
-                'nullable',
+                'required',
                 'date',
-                'before:' . Carbon::now()->subYears(18)->format('d/m/Y')
+                'before:' . Carbon::now()->subYears(18)
             ]
+        ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'birthday' => Carbon::parse($this->birthday)
+        ]);
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'birthday.before' => 'You must be 18 years old or above'
         ];
     }
 }
